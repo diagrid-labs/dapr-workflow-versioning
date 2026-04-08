@@ -46,8 +46,9 @@ app.MapGet("/status/{instanceId}", async (
     {
         return Results.NotFound($"Workflow instance '{instanceId}' not found.");
     }
+    var output = state.ReadOutputAs<DiagnosticsOutput>();
 
-    return Results.Ok(state);
+    return Results.Ok(new {state, output});
 });
 
 app.MapPost("pause/{instanceId}", async (

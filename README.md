@@ -1,1 +1,1 @@
-# dapr-workflow-versioning
+# Dapr Workflow Versioning
