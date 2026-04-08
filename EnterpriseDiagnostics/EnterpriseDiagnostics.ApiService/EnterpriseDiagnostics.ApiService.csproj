@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <NoWarn>DAPR_CONVERSATION</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EnterpriseDiagnostics.ServiceDefaults\EnterpriseDiagnostics.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapr.AI" Version="1.17.8" />
+    <PackageReference Include="Dapr.Workflow" Version="1.17.8" />
+    <PackageReference Include="Dapr.Workflow.Versioning" Version="1.17.8" />
+  </ItemGroup>
+
+</Project>
