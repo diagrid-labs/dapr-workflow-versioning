@@ -1,0 +1,47 @@
+title: Workflow Versioning
+description: ''
+version: 3
+scenes:
+  - id: scene-mnqzvwx1-dkk1
+    title: Build application
+    moves:
+      - action: executeTerminalCommand
+        command: cd EnterpriseDiagnostics
+        terminalId: app-run
+        insertTypingMode: instant
+        autoExecute: false
+      - action: executeTerminalCommand
+        command: dotnet build
+        terminalId: app-run
+        insertTypingMode: instant
+        autoExecute: true
+  - id: scene-mnqzz7qb-zhxr
+    title: Run initial version
+    moves:
+      - action: executeTerminalCommand
+        command: aspire run
+        terminalId: app-run
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 100
+      - action: showInfoMessage
+        message: Open Aspire Dashboard & Diagrid Dev Dashboard
+  - id: scene-mnr036vl-9amu
+    title: Start workflow
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/EnterpriseDiagnostics.ApiService.http
+  - id: scene-mnr9tzqq-bfvk
+    title: Check Workflow Dashboard
+    moves:
+      - action: showInfoMessage
+        message: Check Diagrid Dev Dashboard
+  - id: scene-mnr9uzk3-567g
+    title: Add activity to workflow
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflow.cs
+      - action: insert
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflow.cs
+        position: '30:36'
+        highlightWholeLine: true
+        contentPath: .demo/inserts/01-add-activity.txt

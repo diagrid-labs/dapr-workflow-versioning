@@ -18,7 +18,9 @@ internal sealed partial class AnalyzeHullActivity(
 
         var options = new ConversationOptions("conversation")
         {
-            Temperature = 0.7
+            Temperature = 0.7,
+            PromptCacheRetention = TimeSpan.FromMinutes(15),
+            ResponseFormat = GetResponseFormat()
         };
 
         var response = await conversationClient.ConverseAsync(
@@ -28,10 +30,7 @@ internal sealed partial class AnalyzeHullActivity(
                     new SystemMessage
                     {
                         Content = [new MessageContent(
-                            "You are a Starfleet engineering diagnostic system. " +
-                            "Respond ONLY with valid JSON, no markdown formatting. " +
-                            "Use this exact JSON structure: " +
-                            "{\"systemName\": \"string\", \"status\": \"string\", \"issues\": [\"string\"], \"healthPercentage\": number}")]
+                            "You are a Starfleet engineering diagnostic system.")]
                     },
                     new UserMessage
                     {
@@ -55,6 +54,38 @@ internal sealed partial class AnalyzeHullActivity(
             json.GetProperty("status").GetString() ?? "Unknown",
             JsonSerializer.Deserialize<string[]>(json.GetProperty("issues").GetRawText()) ?? [],
             json.GetProperty("healthPercentage").GetInt32());
+    }
+
+    private static Google.Protobuf.WellKnownTypes.Struct GetResponseFormat()
+    {
+        var responseFormat = new Google.Protobuf.WellKnownTypes.Struct();
+        responseFormat.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("object"));
+
+        var properties = new Google.Protobuf.WellKnownTypes.Struct();
+
+        var stringType = new Google.Protobuf.WellKnownTypes.Struct();
+        stringType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("string"));
+
+        var numberType = new Google.Protobuf.WellKnownTypes.Struct();
+        numberType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("integer"));
+
+        var issuesType = new Google.Protobuf.WellKnownTypes.Struct();
+        issuesType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("array"));
+        issuesType.Fields.Add("items", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
+
+        properties.Fields.Add("systemName", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
+        properties.Fields.Add("status", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
+        properties.Fields.Add("issues", Google.Protobuf.WellKnownTypes.Value.ForStruct(issuesType));
+        properties.Fields.Add("healthPercentage", Google.Protobuf.WellKnownTypes.Value.ForStruct(numberType));
+
+        responseFormat.Fields.Add("properties", Google.Protobuf.WellKnownTypes.Value.ForStruct(properties));
+        responseFormat.Fields.Add("required", Google.Protobuf.WellKnownTypes.Value.ForList(
+            Google.Protobuf.WellKnownTypes.Value.ForString("systemName"),
+            Google.Protobuf.WellKnownTypes.Value.ForString("status"),
+            Google.Protobuf.WellKnownTypes.Value.ForString("issues"),
+            Google.Protobuf.WellKnownTypes.Value.ForString("healthPercentage")));
+
+        return responseFormat;
     }
 
     [LoggerMessage(LogLevel.Information, "AnalyzeHullActivity: Analyzing hull for {ShipName}")]

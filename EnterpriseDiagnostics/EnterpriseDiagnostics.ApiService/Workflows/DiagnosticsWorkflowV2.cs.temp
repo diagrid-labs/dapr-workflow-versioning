@@ -5,37 +5,51 @@ using EnterpriseDiagnostics.ApiService.Models;
 
 namespace EnterpriseDiagnostics.ApiService.Workflows;
 
-internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, DiagnosticsOutput>
+internal sealed partial class DiagnosticsWorkflowV2 : Workflow<DiagnosticsInput, DiagnosticsOutput>
 {
     public override async Task<DiagnosticsOutput> RunAsync(
         WorkflowContext context,
         DiagnosticsInput input)
     {
-        var logger = context.CreateReplaySafeLogger<DiagnosticsWorkflow>();
+        var logger = context.CreateReplaySafeLogger<DiagnosticsWorkflowV2>();
         LogStart(logger, context.InstanceId, input.ShipName, input.Iteration);
 
         // Fan-out: run all four analyses in parallel
-        var hullResult = await context.CallActivityAsync<AnalysisResult>(
+        var hullTask = context.CallActivityAsync<AnalysisResult>(
             nameof(AnalyzeHullActivity),
             new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Hull"));
 
-        var warpCoreResult =  await context.CallActivityAsync<AnalysisResult>(
+        var warpCoreTask = context.CallActivityAsync<AnalysisResult>(
             nameof(AnalyzeWarpCoreActivity),
             new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Warp Core"));
 
-        var securityResult = await context.CallActivityAsync<AnalysisResult>(
+        var securityTask = context.CallActivityAsync<AnalysisResult>(
             nameof(AnalyzeSecurityProtocolsActivity),
             new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Security Protocols"));
 
+        var weaponsTask = context.CallActivityAsync<AnalysisResult>(
+            nameof(AnalyzeWeaponSystemsActivity),
+            new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Weapon Systems"));
+
+        // Fan-in: wait for all analyses to complete
+        await Task.WhenAll(hullTask, warpCoreTask, securityTask, weaponsTask);
+
+        var hullResult = hullTask.Result;
+        var warpCoreResult = warpCoreTask.Result;
+        var securityResult = securityTask.Result;
+        var weaponsResult = weaponsTask.Result;
+
+        LogAnalysesComplete(logger, context.InstanceId);
+
+        // Generate recommendations based on combined analysis data
         var recommendationsInput = new RecommendationsInput(
             input.ShipName,
             input.DiagnosticsDate,
             input.EngineerName,
             hullResult,
             warpCoreResult,
-            securityResult);
-
-        LogAnalysesComplete(logger, context.InstanceId);
+            securityResult,
+            weaponsResult);
 
         var recommendations = await context.CallActivityAsync<RecommendationsResult>(
             nameof(GenerateRecommendationsActivity),
@@ -55,8 +69,7 @@ internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, D
 
         LogWorkflowComplete(logger, context.InstanceId);
 
-        input = input with { Iteration = input.Iteration + 1 };
-        if (input.Iteration < 10) {
+        if (input.Iteration > 10) {
             await context.CreateTimer(TimeSpan.FromMinutes(1));
             context.ContinueAsNew(input);
         }
@@ -65,6 +78,10 @@ internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, D
             input.ShipName,
             input.DiagnosticsDate,
             input.EngineerName,
+            hullResult,
+            warpCoreResult,
+            securityResult,
+            weaponsResult,
             recommendations,
             notification.Message);
     }

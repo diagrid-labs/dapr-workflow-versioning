@@ -1,0 +1,26 @@
+        RecommendationsInput recommendationsInput;
+        if (context.IsPatched("AddWeaponsAnalysis"))
+        {
+            var weaponsResult = await context.CallActivityAsync<AnalysisResult>(
+                nameof(AnalyzeWeaponSystemsActivity),
+                new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Weapon Systems"));
+
+             recommendationsInput = new RecommendationsInput(
+                input.ShipName,
+                input.DiagnosticsDate,
+                input.EngineerName,
+                hullResult,
+                warpCoreResult,
+                securityResult,
+                weaponsResult);
+        }
+        else
+        {
+             recommendationsInput = new RecommendationsInput(
+                input.ShipName,
+                input.DiagnosticsDate,
+                input.EngineerName,
+                hullResult,
+                warpCoreResult,
+                securityResult);
+        }

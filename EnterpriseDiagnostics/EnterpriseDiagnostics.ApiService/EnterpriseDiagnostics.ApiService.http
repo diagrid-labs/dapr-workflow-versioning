@@ -9,7 +9,8 @@ Content-Type: application/json
     "id": "{{$guid}}",
     "shipName": "USS Enterprise NCC-1701-D",
     "diagnosticsDate": "2370-04-08",
-    "engineerName": "Geordi La Forge"
+    "engineerName": "Geordi La Forge",
+    "iteration" : 0
 }
 
 ### Get the workflow status

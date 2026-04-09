@@ -27,13 +27,32 @@ internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, D
             nameof(AnalyzeSecurityProtocolsActivity),
             new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Security Protocols"));
 
-        var recommendationsInput = new RecommendationsInput(
-            input.ShipName,
-            input.DiagnosticsDate,
-            input.EngineerName,
-            hullResult,
-            warpCoreResult,
-            securityResult);
+        RecommendationsInput recommendationsInput;
+        if (context.IsPatched("AddWeaponsAnalysis"))
+        {
+            var weaponsResult = await context.CallActivityAsync<AnalysisResult>(
+                nameof(AnalyzeWeaponSystemsActivity),
+                new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Weapon Systems"));
+
+             recommendationsInput = new RecommendationsInput(
+                input.ShipName,
+                input.DiagnosticsDate,
+                input.EngineerName,
+                hullResult,
+                warpCoreResult,
+                securityResult,
+                weaponsResult);
+        }
+        else
+        {
+             recommendationsInput = new RecommendationsInput(
+                input.ShipName,
+                input.DiagnosticsDate,
+                input.EngineerName,
+                hullResult,
+                warpCoreResult,
+                securityResult);
+        }
 
         LogAnalysesComplete(logger, context.InstanceId);
 
@@ -55,7 +74,6 @@ internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, D
 
         LogWorkflowComplete(logger, context.InstanceId);
 
-        input = input with { Iteration = input.Iteration + 1 };
         if (input.Iteration < 10) {
             await context.CreateTimer(TimeSpan.FromMinutes(1));
             context.ContinueAsNew(input);

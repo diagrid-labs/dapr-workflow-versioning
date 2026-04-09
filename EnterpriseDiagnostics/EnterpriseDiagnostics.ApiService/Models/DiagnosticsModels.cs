@@ -4,16 +4,13 @@ public record DiagnosticsInput(
     string Id,
     string ShipName,
     string DiagnosticsDate,
-    string EngineerName);
+    string EngineerName,
+    int Iteration);
 
 public record DiagnosticsOutput(
     string ShipName,
     string DiagnosticsDate,
     string EngineerName,
-    AnalysisResult HullAnalysis,
-    AnalysisResult WarpCoreAnalysis,
-    AnalysisResult SecurityProtocolsAnalysis,
-    AnalysisResult WeaponSystemsAnalysis,
     RecommendationsResult Recommendations,
     string BridgeNotification);
 
@@ -33,10 +30,10 @@ public record RecommendationsInput(
     string ShipName,
     string DiagnosticsDate,
     string EngineerName,
-    AnalysisResult HullAnalysis,
-    AnalysisResult WarpCoreAnalysis,
-    AnalysisResult SecurityProtocolsAnalysis,
-    AnalysisResult WeaponSystemsAnalysis);
+    AnalysisResult? HullAnalysis,
+    AnalysisResult? WarpCoreAnalysis,
+    AnalysisResult? SecurityProtocolsAnalysis,
+    AnalysisResult? WeaponSystemsAnalysis = null);
 
 public record RecommendationsResult(
     string[] Recommendations,
