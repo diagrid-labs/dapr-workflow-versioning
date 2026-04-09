@@ -69,7 +69,7 @@ internal sealed partial class DiagnosticsWorkflowV2 : Workflow<DiagnosticsInput,
 
         LogWorkflowComplete(logger, context.InstanceId);
 
-        if (input.Iteration > 10) {
+        if (input.Iteration < 10) {
             await context.CreateTimer(TimeSpan.FromMinutes(1));
             context.ContinueAsNew(input);
         }
@@ -78,10 +78,6 @@ internal sealed partial class DiagnosticsWorkflowV2 : Workflow<DiagnosticsInput,
             input.ShipName,
             input.DiagnosticsDate,
             input.EngineerName,
-            hullResult,
-            warpCoreResult,
-            securityResult,
-            weaponsResult,
             recommendations,
             notification.Message);
     }
