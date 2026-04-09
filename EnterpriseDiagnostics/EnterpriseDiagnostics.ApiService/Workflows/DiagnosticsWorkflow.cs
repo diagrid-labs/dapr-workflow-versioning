@@ -12,9 +12,9 @@ internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, D
         DiagnosticsInput input)
     {
         var logger = context.CreateReplaySafeLogger<DiagnosticsWorkflow>();
-        LogStart(logger, context.InstanceId, input.ShipName, input.Iteration);
+        LogStart(logger, context.InstanceId, input.ShipName);
 
-        // Fan-out: run all four analyses in parallel
+
         var hullResult = await context.CallActivityAsync<AnalysisResult>(
             nameof(AnalyzeHullActivity),
             new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Hull"));
@@ -24,7 +24,7 @@ internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, D
             new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Warp Core"));
 
         var securityResult = await context.CallActivityAsync<AnalysisResult>(
-            nameof(AnalyzeSecurityProtocolsActivity),
+            nameof(AnalyzeSecuritySystemsActivity),
             new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Security Protocols"));
 
         var recommendationsInput = new RecommendationsInput(
@@ -55,12 +55,6 @@ internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, D
 
         LogWorkflowComplete(logger, context.InstanceId);
 
-        input = input with { Iteration = input.Iteration + 1 };
-        if (input.Iteration < 10) {
-            await context.CreateTimer(TimeSpan.FromMinutes(1));
-            context.ContinueAsNew(input);
-        }
-
         return new DiagnosticsOutput(
             input.ShipName,
             input.DiagnosticsDate,
@@ -69,8 +63,8 @@ internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, D
             notification.Message);
     }
 
-    [LoggerMessage(LogLevel.Information, "Starting diagnostics workflow {Id} for ship: {ShipName}, iteration: {Iteration}")]
-    static partial void LogStart(ILogger logger, string Id, string ShipName, int Iteration);
+    [LoggerMessage(LogLevel.Information, "Starting diagnostics workflow {Id} for ship: {ShipName}")]
+    static partial void LogStart(ILogger logger, string Id, string ShipName);
 
     [LoggerMessage(LogLevel.Information, "All analyses complete for workflow {Id}")]
     static partial void LogAnalysesComplete(ILogger logger, string Id);

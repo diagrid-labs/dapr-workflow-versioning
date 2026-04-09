@@ -16,7 +16,7 @@ builder.Services.AddDaprWorkflow(options =>
 {
     options.RegisterActivity<AnalyzeHullActivity>();
     options.RegisterActivity<AnalyzeWarpCoreActivity>();
-    options.RegisterActivity<AnalyzeSecurityProtocolsActivity>();
+    options.RegisterActivity<AnalyzeSecuritySystemsActivity>();
 
     options.RegisterActivity<GenerateRecommendationsActivity>();
     options.RegisterActivity<NotifyBridgeActivity>();

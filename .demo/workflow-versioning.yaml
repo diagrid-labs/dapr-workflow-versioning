@@ -9,7 +9,7 @@ scenes:
         command: cd EnterpriseDiagnostics
         terminalId: app-run
         insertTypingMode: instant
-        autoExecute: false
+        autoExecute: true
       - action: executeTerminalCommand
         command: dotnet build
         terminalId: app-run
@@ -35,6 +35,13 @@ scenes:
     moves:
       - action: showInfoMessage
         message: Check Diagrid Dev Dashboard
+  - id: scene-mnrbvk1w-jr1h
+    title: Stop application
+    moves:
+      - action: focusTerminal
+        terminalId: app-run
+      - action: sendKeybinding
+        keybinding: ctrl+c
   - id: scene-mnrbg470-b5tt
     title: Open workflow file
     moves:
@@ -63,13 +70,6 @@ scenes:
         position: '20'
         insertTypingMode: instant
         highlightWholeLine: true
-  - id: scene-mnrbvk1w-jr1h
-    title: Stop application
-    moves:
-      - action: focusTerminal
-        terminalId: app-run
-      - action: sendKeybinding
-        keybinding: ctrl+c
   - id: demo-mnrbmsxe-udag
     title: Run patched workflow
     moves:
@@ -85,3 +85,10 @@ scenes:
     moves:
       - action: open
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/EnterpriseDiagnostics.ApiService.http
+  - id: scene-mnrnhqbw-iqlg
+    title: Stop patched application
+    moves:
+      - action: focusTerminal
+        terminalId: app-run
+      - action: sendKeybinding
+        keybinding: ctrl+c

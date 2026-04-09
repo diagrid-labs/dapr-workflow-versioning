@@ -26,7 +26,9 @@ internal sealed partial class GenerateRecommendationsActivity(
 
         var options = new ConversationOptions("conversation")
         {
-            Temperature = 0.7
+            Temperature = 0.7,
+            PromptCacheRetention = TimeSpan.FromMinutes(15),
+            ResponseFormat = GetResponseFormat()
         };
 
         var response = await conversationClient.ConverseAsync(
@@ -36,10 +38,7 @@ internal sealed partial class GenerateRecommendationsActivity(
                     new SystemMessage
                     {
                         Content = [new MessageContent(
-                            "You are a Starfleet engineering diagnostic system. " +
-                            "Respond ONLY with valid JSON, no markdown formatting. " +
-                            "Use this exact JSON structure: " +
-                            "{\"recommendations\": [\"string\"], \"priorities\": [\"string\"]}")]
+                            "You are a Starfleet engineering diagnostic system for analysis recommendations.")]
                     },
                     new UserMessage
                     {
@@ -61,6 +60,35 @@ internal sealed partial class GenerateRecommendationsActivity(
         return new RecommendationsResult(
             JsonSerializer.Deserialize<string[]>(json.GetProperty("recommendations").GetRawText()) ?? [],
             JsonSerializer.Deserialize<string[]>(json.GetProperty("priorities").GetRawText()) ?? []);
+    }
+
+    private static Google.Protobuf.WellKnownTypes.Struct GetResponseFormat()
+    {
+        var responseFormat = new Google.Protobuf.WellKnownTypes.Struct();
+        responseFormat.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("object"));
+
+        var properties = new Google.Protobuf.WellKnownTypes.Struct();
+
+        var stringType = new Google.Protobuf.WellKnownTypes.Struct();
+        stringType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("string"));
+
+        var recommendationsType = new Google.Protobuf.WellKnownTypes.Struct();
+        recommendationsType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("array"));
+        recommendationsType.Fields.Add("items", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
+
+        var prioritiesType = new Google.Protobuf.WellKnownTypes.Struct();
+        prioritiesType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("array"));
+        prioritiesType.Fields.Add("items", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
+
+        properties.Fields.Add("recommendations", Google.Protobuf.WellKnownTypes.Value.ForStruct(recommendationsType));
+        properties.Fields.Add("priorities", Google.Protobuf.WellKnownTypes.Value.ForStruct(prioritiesType));
+
+        responseFormat.Fields.Add("properties", Google.Protobuf.WellKnownTypes.Value.ForStruct(properties));
+        responseFormat.Fields.Add("required", Google.Protobuf.WellKnownTypes.Value.ForList(
+            Google.Protobuf.WellKnownTypes.Value.ForString("recommendations"),
+            Google.Protobuf.WellKnownTypes.Value.ForString("priorities")));
+
+        return responseFormat;
     }
 
     [LoggerMessage(LogLevel.Information, "GenerateRecommendationsActivity: Generating recommendations for {ShipName}")]

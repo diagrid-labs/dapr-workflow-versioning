@@ -6,8 +6,8 @@ using EnterpriseDiagnostics.ApiService.Models;
 
 namespace EnterpriseDiagnostics.ApiService.Activities;
 
-internal sealed partial class AnalyzeWarpCoreActivity(
-    ILogger<AnalyzeWarpCoreActivity> logger,
+internal sealed partial class AnalyzeSecuritySystemsActivity(
+    ILogger<AnalyzeSecuritySystemsActivity> logger,
     DaprConversationClient conversationClient) : WorkflowActivity<AnalysisInput, AnalysisResult>
 {
     public override async Task<AnalysisResult> RunAsync(
@@ -30,17 +30,17 @@ internal sealed partial class AnalyzeWarpCoreActivity(
                     new SystemMessage
                     {
                         Content = [new MessageContent(
-                            "You are a Starfleet engineering diagnostic system for the warp core.")]
+                            "You are a Starfleet engineering diagnostic system for starship security systems.")]
                     },
                     new UserMessage
                     {
                         Name = input.EngineerName.Replace(" ", ""),
                         Content = [new MessageContent(
-                            $"Perform a warp core analysis for the starship {input.ShipName}. " +
+                            $"Perform a security systems analysis for the starship {input.ShipName}. " +
                             $"Diagnostics requested on {input.DiagnosticsDate} by {input.EngineerName}. " +
-                            "Analyze matter/antimatter containment, dilithium crystal alignment, " +
-                            "plasma injectors, and warp field coil efficiency. Return JSON with systemName, " +
-                            "status, issues array, and healthPercentage (0-100).")]
+                            "Analyze shield generators, encryption protocols, intrusion detection systems, " +
+                            "and access control matrices. Return JSON with systemName, status, issues array, " +
+                            "and healthPercentage (0-100).")]
                     }
                 })
             ],
@@ -50,7 +50,7 @@ internal sealed partial class AnalyzeWarpCoreActivity(
             response.Outputs.First().Choices.First().Message.Content);
 
         return new AnalysisResult(
-            json.GetProperty("systemName").GetString() ?? "Warp Core",
+            json.GetProperty("systemName").GetString() ?? "Security Systems",
             json.GetProperty("status").GetString() ?? "Unknown",
             JsonSerializer.Deserialize<string[]>(json.GetProperty("issues").GetRawText()) ?? [],
             json.GetProperty("healthPercentage").GetInt32());
@@ -88,6 +88,6 @@ internal sealed partial class AnalyzeWarpCoreActivity(
         return responseFormat;
     }
 
-    [LoggerMessage(LogLevel.Information, "AnalyzeWarpCoreActivity: Analyzing warp core for {ShipName}")]
+    [LoggerMessage(LogLevel.Information, "AnalyzeSecurityProtocolsActivity: Analyzing security protocols for {ShipName}")]
     static partial void LogActivity(ILogger logger, string ShipName);
 }

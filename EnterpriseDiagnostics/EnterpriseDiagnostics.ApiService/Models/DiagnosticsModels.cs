@@ -4,8 +4,7 @@ public record DiagnosticsInput(
     string Id,
     string ShipName,
     string DiagnosticsDate,
-    string EngineerName,
-    int Iteration);
+    string EngineerName);
 
 public record DiagnosticsOutput(
     string ShipName,
