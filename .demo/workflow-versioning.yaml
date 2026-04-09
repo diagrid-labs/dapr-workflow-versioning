@@ -35,13 +35,17 @@ scenes:
     moves:
       - action: showInfoMessage
         message: Check Diagrid Dev Dashboard
-  - id: scene-mnr9uzk3-567g
-    title: Add activity to workflow
+  - id: scene-mnrbg470-b5tt
+    title: Open workflow file
     moves:
       - action: open
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflow.cs
-      - action: insert
+  - id: scene-mnr9uzk3-567g
+    title: Add activity to workflow
+    moves:
+      - action: replace
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflow.cs
+        contentPath: .demo/inserts/01-add-activity.txt
         position: '30:36'
         highlightWholeLine: true
-        contentPath: .demo/inserts/01-add-activity.txt
+        insertTypingMode: line-by-line
