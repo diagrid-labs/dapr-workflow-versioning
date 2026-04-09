@@ -16,7 +16,7 @@ scenes:
         insertTypingMode: instant
         autoExecute: true
   - id: scene-mnqzz7qb-zhxr
-    title: Run initial version
+    title: Run initial workflow
     moves:
       - action: executeTerminalCommand
         command: aspire run
@@ -49,3 +49,39 @@ scenes:
         position: '30:36'
         highlightWholeLine: true
         insertTypingMode: line-by-line
+  - id: scene-mnrc0g7q-lo5c
+    title: Open Program.cs
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Program.cs
+  - id: demo-mnrbub59-9rfm
+    title: Add activity registration
+    moves:
+      - action: insert
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Program.cs
+        contentPath: .demo/inserts/02-add-activity.txt
+        position: '20'
+        insertTypingMode: instant
+        highlightWholeLine: true
+  - id: scene-mnrbvk1w-jr1h
+    title: Stop application
+    moves:
+      - action: focusTerminal
+        terminalId: app-run
+      - action: sendKeybinding
+        keybinding: ctrl+c
+  - id: demo-mnrbmsxe-udag
+    title: Run patched workflow
+    moves:
+      - action: executeTerminalCommand
+        command: aspire run
+        terminalId: app-run
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 100
+      - action: showInfoMessage
+        message: Open Aspire Dashboard & Diagrid Dev Dashboard
+  - id: scene-mnrbxdox-ksu1
+    title: Start patched workflow
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/EnterpriseDiagnostics.ApiService.http
