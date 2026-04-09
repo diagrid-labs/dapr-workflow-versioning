@@ -2,6 +2,36 @@ title: Workflow Versioning
 description: ''
 version: 3
 scenes:
+  - id: demo-mnropc6e-0vf6
+    title: Show Aspire projects
+    moves:
+      - action: executeVSCodeCommand
+        command: workbench.view.explorer
+  - id: scene-mnrqasb2-sver
+    title: Show AppHost
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs
+  - id: scene-mnrqza12-wz9z
+    title: Show workflow diagram
+    moves:
+      - action: markdownPreview
+        path: .demo/slides/diagnostics-workflow-v0.md
+  - id: scene-mnrol4o8-zic7
+    title: Show workflow
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflow.cs
+  - id: demo-mnromf7p-rq2z
+    title: Show activity
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Activities/AnalyzeHullActivity.cs
+  - id: demo-mnron4pu-wd99
+    title: Show Program.cs
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Program.cs
   - id: scene-mnqzvwx1-dkk1
     title: Build application
     moves:
@@ -78,8 +108,6 @@ scenes:
         terminalId: app-run
         insertTypingMode: character-by-character
         insertTypingSpeed: 100
-      - action: showInfoMessage
-        message: Open Aspire Dashboard & Diagrid Dev Dashboard
   - id: scene-mnrbxdox-ksu1
     title: Start patched workflow
     moves:
@@ -92,3 +120,29 @@ scenes:
         terminalId: app-run
       - action: sendKeybinding
         keybinding: ctrl+c
+  - id: demo-mnrr0suf-qlct
+    title: Show workflow v2 diagram
+    moves:
+      - action: markdownPreview
+        path: .demo/slides/diagnostics-workflow-v2.md
+  - id: scene-mnro3may-44t4
+    title: Workflow V2
+    moves:
+      - action: rename
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflowV2.cs.temp
+        dest: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflowV2.cs
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflowV2.cs
+  - id: demo-mnro68t7-3bk9
+    title: Run V2 workflow
+    moves:
+      - action: executeTerminalCommand
+        command: aspire run
+        terminalId: app-run
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 100
+  - id: demo-mnro8r8o-8lky
+    title: Start V2 workflow
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/EnterpriseDiagnostics.ApiService.http

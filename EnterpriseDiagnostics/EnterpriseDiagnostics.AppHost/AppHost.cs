@@ -14,8 +14,8 @@ var cache = builder
     .WithContainerName("workflow-state")
     .WithDataVolume("workflow-state-data");
 
-var apiService = builder
-    .AddProject<Projects.EnterpriseDiagnostics_ApiService>("apiservice")
+var workflowApp = builder
+    .AddProject<Projects.EnterpriseDiagnostics_ApiService>("wf-app")
     .WithDaprSidecar(new DaprSidecarOptions
     {
         LogLevel = "debug",
@@ -25,7 +25,7 @@ var apiService = builder
         ],
     });
 
-apiService.WaitFor(cache);
+workflowApp.WaitFor(cache);
 
 builder
     .AddContainer("diagrid-dashboard", "ghcr.io/diagridio/diagrid-dashboard:latest")
