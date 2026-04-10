@@ -1,0 +1,7 @@
+version: 1
+common:
+  resourcesPath: ./EnterpriseDiagnostics.WorkflowApp/Resources
+apps:
+  - appID: wf-app
+    appDirPath: ./EnterpriseDiagnostics.WorkflowApp/
+    command: ["dotnet", "run"]

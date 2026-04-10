@@ -5,13 +5,13 @@ using EnterpriseDiagnostics.ApiService.Models;
 
 namespace EnterpriseDiagnostics.ApiService.Workflows;
 
-internal sealed partial class DiagnosticsWorkflowV3 : Workflow<DiagnosticsInput, DiagnosticsOutput>
+internal sealed partial class DiagnosticsWorkflow : Workflow<DiagnosticsInput, DiagnosticsOutput>
 {
     public override async Task<DiagnosticsOutput> RunAsync(
         WorkflowContext context,
         DiagnosticsInput input)
     {
-        var logger = context.CreateReplaySafeLogger<DiagnosticsWorkflowV3>();
+        var logger = context.CreateReplaySafeLogger<DiagnosticsWorkflow>();
         LogStart(logger, context.InstanceId, input.ShipName);
 
         // Define activity tasks to run the four analyses in parallel
