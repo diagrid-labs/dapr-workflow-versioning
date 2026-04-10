@@ -101,7 +101,7 @@ scenes:
         insertTypingMode: instant
         highlightWholeLine: true
   - id: demo-mnrbmsxe-udag
-    title: Run patched workflow
+    title: Run patched workflow app
     moves:
       - action: executeTerminalCommand
         command: aspire run
@@ -134,7 +134,7 @@ scenes:
       - action: open
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflowV2.cs
   - id: demo-mnro68t7-3bk9
-    title: Run V2 workflow
+    title: Run V2 workflow app
     moves:
       - action: executeTerminalCommand
         command: aspire run
@@ -146,3 +146,54 @@ scenes:
     moves:
       - action: open
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/EnterpriseDiagnostics.ApiService.http
+  - id: scene-mnso1o3y-3dgm
+    title: Stop V2 application
+    moves:
+      - action: focusTerminal
+        terminalId: app-run
+      - action: sendKeybinding
+        keybinding: ctrl+c
+  - id: scene-mnsnx6hf-t4lc
+    title: 'Add Diagrid.Aspire.Hosting.Catalyst nuget '
+    moves:
+      - action: executeTerminalCommand
+        terminalId: app-run
+        command: dotnet add EnterpriseDiagnostics.AppHost/EnterpriseDiagnostics.AppHost.csproj package Diagrid.Aspire.Hosting.Catalyst
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 50
+        autoExecute: true
+  - id: scene-mnsnz84q-3lj7
+    title: Update AppHost.cs
+    moves:
+      - action: rename
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs
+        dest: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs.orig
+      - action: rename
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs.temp
+        dest: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs
+  - id: scene-mnsoah7o-7isp
+    title: Diagrid login
+    moves:
+      - action: executeTerminalCommand
+        terminalId: app-run
+        command: diagrid login
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 75
+        autoExecute: true
+  - id: demo-mnsoi9s8-idpj
+    title: Diagrid set org
+    moves:
+      - action: executeTerminalCommand
+        terminalId: app-run
+        command: diagrid org use Marc-prod
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 75
+        autoExecute: true
+  - id: demo-mnsoc0f7-arux
+    title: Run Catalyst workflow app
+    moves:
+      - action: executeTerminalCommand
+        command: aspire run
+        terminalId: app-run
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 100

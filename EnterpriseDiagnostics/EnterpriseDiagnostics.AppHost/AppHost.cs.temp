@@ -1,39 +1,15 @@
-using System.Reflection;
-using CommunityToolkit.Aspire.Hosting.Dapr;
+using Diagrid.Aspire.Hosting.Catalyst;
+using Grpc.Core;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddDapr();
+// This configures a new project in Catalyst with a managed state store for workflow state.
+var catalystProject = builder.AddCatalystProject("wf-catalyst-aspire-2");
+    // .WithCatalystKvStore("workflow-store");
 
-string executingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-    ?? throw new("Where am I?");
-
-var cachePassword = builder.AddParameter("cache-password", "state-store-123", secret: true);
-var cache = builder
-    .AddValkey("cache", 16379, cachePassword)
-    .WithContainerName("workflow-state")
-    .WithDataVolume("workflow-state-data");
-
-var workflowApp = builder
-    .AddProject<Projects.EnterpriseDiagnostics_ApiService>("wf-app")
-    .WithDaprSidecar(new DaprSidecarOptions
-    {
-        LogLevel = "debug",
-        ResourcesPaths =
-        [
-            Path.Join(executingPath, "Resources"),
-        ],
-    });
-
-workflowApp.WaitFor(cache);
-
-builder
-    .AddContainer("diagrid-dashboard", "ghcr.io/diagridio/diagrid-dashboard:latest")
-    .WithContainerName("diagrid-dashboard")
-    .WithBindMount(Path.Join(executingPath, "Resources"), "/app/components")
-    .WithEnvironment("COMPONENT_FILE", "/app/components/statestore-dashboard.yaml")
-    .WithEnvironment("APP_ID", "diagrid-dashboard")
-    .WithHttpEndpoint(targetPort: 8080)
-    .WithReference(cache);
+// The apiService will not use a Dapr sidecar anymore but will use the Catalyst.
+var workflowApp = builder.AddProject<Projects.EnterpriseDiagnostics_ApiService>("wf-app")
+    .WithCatalyst(catalystProject);
 
 builder.Build().Run();
