@@ -199,6 +199,11 @@ scenes:
     moves:
       - action: openSlide
         path: .demo/slides/catalyst.md
+  - id: demo-mnvl7y2p-tcga
+    title: Catalyst explanation
+    moves:
+      - action: openSlide
+        path: .demo/slides/catalyst-explanation.md
   - id: scene-mnsnx6hf-t4lc
     title: 'Add Diagrid.Aspire.Hosting.Catalyst nuget '
     moves:
