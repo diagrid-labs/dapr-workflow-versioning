@@ -1,3 +1,15 @@
 {
-    "demoTime.defaultFileType": "yaml"
+    "demoTime.defaultFileType": "yaml",
+    "demoTime.timer": 45,
+    "demoTime.presentationViewToggles": [
+        "tabs",
+        "sideBar",
+        "panel"
+    ],
+    "demoTime.highlightBlur": 2,
+    "demoTime.openInConfigEditor": true,
+    "demoTime.customTheme": ".demo/slides/theme.css",
+    "workbench.statusBar.visible": true,
+    "workbench.editor.showTabs": "none",
+    "workbench.activityBar.location": "default",
 }

@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Outfit:wght@400;700&family=Space+Grotesk:wght@400;700&display=swap');        
+
+.slide.default {
+  --demotime-intro-heading-color: #ffffff;
+  --demotime-intro-heading-background: #41bd9b;
+
+  --demotime-section-heading-color: #ffffff;
+  --demotime-section-heading-background: #41bd9b;
+
+  .intro h1,
+  .section h1 {
+    font-family: 'Outfit', sans-serif;
+    border-radius: 12px;
+    padding: 16px 32px;
+    display: inline-block;
+  }
+
+  .section h1 {
+    font-size: 2.5rem;
+  }
+
+  & h1,
+  .two-columns h1 {
+    font-family: 'Outfit', sans-serif;
+  }
+
+  font-family: 'Inter', sans-serif;
+}

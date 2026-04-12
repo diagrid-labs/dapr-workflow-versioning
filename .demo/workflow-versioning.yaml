@@ -2,6 +2,47 @@ title: Workflow Versioning
 description: ''
 version: 3
 scenes:
+  - id: scene-mnvkbklf-nxlv
+    title: Into
+    moves:
+      - action: setPresentationView
+      - action: openSlide
+        path: .demo/slides/title.md
+  - id: demo-mnvkiomz-jlky
+    title: Start timer
+    moves:
+      - action: executeVSCodeCommand
+        command: demo-time.startCountdown
+  - id: demo-mnvkdl3l-krcm
+    title: Topics
+    moves:
+      - action: openSlide
+        path: .demo/slides/topics.md
+  - id: demo-mnvkdz9r-qqr6
+    title: Dapr
+    moves:
+      - action: openSlide
+        path: .demo/slides/dapr.md
+  - id: demo-mnvkec2x-b20x
+    title: Dapr website
+    moves:
+      - action: openSlide
+        path: .demo/slides/dapr-website.md
+  - id: demo-mnvkeq69-ixrh
+    title: Dapr Workflow
+    moves:
+      - action: openSlide
+        path: .demo/slides/dapr-workflow-explanation.md
+  - id: demo-mnvku57q-n6ud
+    title: Local Setup
+    moves:
+      - action: openSlide
+        path: .demo/slides/local-setup.md
+  - id: demo-mnvkuing-f6is
+    title: Technlogies used
+    moves:
+      - action: openSlide
+        path: .demo/slides/technologies.md
   - id: demo-mnropc6e-0vf6
     title: Show Aspire projects
     moves:
@@ -153,6 +194,11 @@ scenes:
         terminalId: app-run
       - action: sendKeybinding
         keybinding: ctrl+c
+  - id: demo-mnvl0dmx-vc4k
+    title: Catalyst
+    moves:
+      - action: openSlide
+        path: .demo/slides/catalyst.md
   - id: scene-mnsnx6hf-t4lc
     title: 'Add Diagrid.Aspire.Hosting.Catalyst nuget '
     moves:
