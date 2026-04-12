@@ -20,7 +20,8 @@ internal sealed partial class NotifyBridgeActivity(
 
         var options = new ConversationOptions("conversation")
         {
-            Temperature = 0.7
+            Temperature = 0.7,
+            ResponseFormat = GetResponseFormat()
         };
 
         var response = await conversationClient.ConverseAsync(
@@ -30,10 +31,7 @@ internal sealed partial class NotifyBridgeActivity(
                     new SystemMessage
                     {
                         Content = [new MessageContent(
-                            "You are a Starfleet engineering diagnostic system. " +
-                            "Respond ONLY with valid JSON, no markdown formatting. " +
-                            "Use this exact JSON structure: " +
-                            "{\"message\": \"string\"}")]
+                            "You are a Starfleet engineering diagnostic system that notifications to the bridge." )]
                     },
                     new UserMessage
                     {
@@ -58,6 +56,25 @@ internal sealed partial class NotifyBridgeActivity(
         LogNotification(logger, message);
 
         return new BridgeNotificationResult(message);
+    }
+
+    private static Google.Protobuf.WellKnownTypes.Struct GetResponseFormat()
+    {
+        var responseFormat = new Google.Protobuf.WellKnownTypes.Struct();
+        responseFormat.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("object"));
+
+        var properties = new Google.Protobuf.WellKnownTypes.Struct();
+
+        var messageType = new Google.Protobuf.WellKnownTypes.Struct();
+        messageType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("string"));
+
+        properties.Fields.Add("message", Google.Protobuf.WellKnownTypes.Value.ForStruct(messageType));
+
+        responseFormat.Fields.Add("properties", Google.Protobuf.WellKnownTypes.Value.ForStruct(properties));
+        responseFormat.Fields.Add("required", Google.Protobuf.WellKnownTypes.Value.ForList(
+            Google.Protobuf.WellKnownTypes.Value.ForString("message")));
+
+        return responseFormat;
     }
 
     [LoggerMessage(LogLevel.Information, "NotifyBridgeActivity: Sending bridge notification for {ShipName}")]

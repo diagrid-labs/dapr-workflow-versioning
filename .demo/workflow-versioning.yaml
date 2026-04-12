@@ -190,10 +190,22 @@ scenes:
         insertTypingSpeed: 75
         autoExecute: true
   - id: demo-mnsoc0f7-arux
-    title: Run Catalyst workflow app
+    title: Run V3 workflow app (Catalyst)
     moves:
       - action: executeTerminalCommand
         command: aspire run
         terminalId: app-run
         insertTypingMode: character-by-character
         insertTypingSpeed: 100
+  - id: demo-mnvhya3k-rrxt
+    title: Start V3 workflow
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/EnterpriseDiagnostics.ApiService.http
+  - id: demo-mnvhvq0r-rj8b
+    title: Stop V3 application
+    moves:
+      - action: focusTerminal
+        terminalId: app-run
+      - action: sendKeybinding
+        keybinding: ctrl+c
