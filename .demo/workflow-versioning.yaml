@@ -13,6 +13,11 @@ scenes:
     moves:
       - action: executeVSCodeCommand
         command: demo-time.startCountdown
+  - id: demo-mnwuglta-k40c
+    title: Problem
+    moves:
+      - action: openSlide
+        path: .demo/slides/problem.md
   - id: demo-mnvkdl3l-krcm
     title: Topics
     moves:
@@ -204,6 +209,11 @@ scenes:
     moves:
       - action: openSlide
         path: .demo/slides/catalyst-explanation.md
+  - id: demo-mnvx25dp-b53v
+    title: Local Setup with Catalyst
+    moves:
+      - action: openSlide
+        path: .demo/slides/technologies-catalyst.md
   - id: scene-mnsnx6hf-t4lc
     title: 'Add Diagrid.Aspire.Hosting.Catalyst nuget '
     moves:

@@ -6,5 +6,5 @@ layout: default
 
 - Dapr Workflow
 - Local setup
-- Workflow Versioning
+- Workflow Versioning demos
 - Running with Catalyst
