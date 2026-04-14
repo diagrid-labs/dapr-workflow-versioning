@@ -48,6 +48,11 @@ scenes:
     moves:
       - action: openSlide
         path: .demo/slides/technologies.md
+  - id: demo-mnyg6csq-qjpi
+    title: Workflow purpose
+    moves:
+      - action: openSlide
+        path: .demo/slides/enterprise-diagnostics.md
   - id: demo-mnropc6e-0vf6
     title: Show Aspire projects
     moves:
@@ -215,13 +220,25 @@ scenes:
       - action: openSlide
         path: .demo/slides/technologies-catalyst.md
   - id: scene-mnsnx6hf-t4lc
-    title: 'Add Diagrid.Aspire.Hosting.Catalyst nuget '
+    title: Update AppHost dependencies
     moves:
       - action: executeTerminalCommand
         terminalId: app-run
         command: dotnet add EnterpriseDiagnostics.AppHost/EnterpriseDiagnostics.AppHost.csproj package Diagrid.Aspire.Hosting.Catalyst
         insertTypingMode: character-by-character
-        insertTypingSpeed: 50
+        insertTypingSpeed: 35
+        autoExecute: true
+      - action: executeTerminalCommand
+        terminalId: app-run
+        command: dotnet remove EnterpriseDiagnostics.AppHost/EnterpriseDiagnostics.AppHost.csproj package Aspire.Hosting.Valkey
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 35
+        autoExecute: true
+      - action: executeTerminalCommand
+        terminalId: app-run
+        command: dotnet remove EnterpriseDiagnostics.AppHost/EnterpriseDiagnostics.AppHost.csproj package CommunityToolkit.Aspire.Hosting.Dapr
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 35
         autoExecute: true
   - id: scene-mnsnz84q-3lj7
     title: Update AppHost.cs
@@ -229,6 +246,8 @@ scenes:
       - action: rename
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs
         dest: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs.orig
+      - action: waitForTimeout
+        timeout: 500
       - action: rename
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs.temp
         dest: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs
@@ -250,6 +269,14 @@ scenes:
         insertTypingMode: character-by-character
         insertTypingSpeed: 75
         autoExecute: true
+  - id: demo-mnyhkhe5-g154
+    title: Workflow V3
+    moves:
+      - action: rename
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflowV3.cs.temp
+        dest: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflowV3.cs
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflowV3.cs
   - id: demo-mnsoc0f7-arux
     title: Run V3 workflow app (Catalyst)
     moves:

@@ -30,7 +30,7 @@ internal sealed partial class AnalyzeHullActivity(
                     new SystemMessage
                     {
                         Content = [new MessageContent(
-                            "You are a Starfleet engineering diagnostic system for teh starship hull.")]
+                            "You are a Starfleet engineering diagnostic system for the starship hull.")]
                     },
                     new UserMessage
                     {
