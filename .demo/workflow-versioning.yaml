@@ -78,6 +78,11 @@ scenes:
     moves:
       - action: open
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Activities/AnalyzeHullActivity.cs
+  - id: demo-mnyleyzz-gv3l
+    title: Show conversation component
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/Resources/conversation.yaml
   - id: demo-mnron4pu-wd99
     title: Show Program.cs
     moves:
