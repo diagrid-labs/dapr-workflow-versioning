@@ -261,21 +261,16 @@ scenes:
       - action: rename
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs.temp
         dest: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs
+      - action: waitForTimeout
+        timeout: 500
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs
   - id: scene-mnsoah7o-7isp
     title: Diagrid login
     moves:
       - action: executeTerminalCommand
         terminalId: app-run
         command: diagrid login
-        insertTypingMode: character-by-character
-        insertTypingSpeed: 75
-        autoExecute: true
-  - id: demo-mnsoi9s8-idpj
-    title: Diagrid set org
-    moves:
-      - action: executeTerminalCommand
-        terminalId: app-run
-        command: diagrid org use Marc-prod
         insertTypingMode: character-by-character
         insertTypingSpeed: 75
         autoExecute: true
@@ -307,9 +302,53 @@ scenes:
         terminalId: app-run
       - action: sendKeybinding
         keybinding: ctrl+c
+  - id: demo-mo1efind-2gyf
+    title: Alt - Use EnterpriseDiagnostics2
+    moves:
+      - action: executeTerminalCommand
+        terminalId: app-run
+        command: cd ..
+        insertTypingMode: instant
+        autoExecute: true
+      - action: executeTerminalCommand
+        terminalId: app-run
+        command: cd EnterpriseDiagnostics2
+        insertTypingMode: instant
+        autoExecute: true
+  - id: demo-mo1eekf9-81nu
+    title: Alt - Diagrid login
+    moves:
+      - action: executeTerminalCommand
+        terminalId: app-run
+        command: diagrid login
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 75
+        autoExecute: true
+  - id: demo-mo1edeg9-rn7q
+    title: 'Alt - Run V3 workflow app (Catalyst) '
+    moves:
+      - action: executeTerminalCommand
+        terminalId: app-run
+        insertTypingMode: character-by-character
+        insertTypingSpeed: 50
+        command: diagrid dev run --project wf-aspire-3 -f .\dapr.yaml --approve
+  - id: demo-mo1eqynt-2wp0
+    title: Alt - Start V3 workflow
+    moves:
+      - action: setPresentationView
+      - action: open
+        path: EnterpriseDiagnostics2/EnterpriseDiagnostics.ApiService/EnterpriseDiagnostics.ApiService.http
+  - id: demo-mo1eqjan-94gk
+    title: Alt - Stop V3 application
+    moves:
+      - action: focusTerminal
+        terminalId: app-run
+      - action: sendKeybinding
+        keybinding: ctrl+c
   - id: scene-mo1c1quc-kfs3
     title: Recap
     moves:
+      - action: setPresentationView
       - action: openSlide
         path: .demo/slides/recap.md
   - id: demo-mo1c2768-lb2s
