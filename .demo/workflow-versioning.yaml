@@ -43,6 +43,31 @@ scenes:
     moves:
       - action: openSlide
         path: .demo/slides/dapr-workflow-explanation.md
+  - id: scene-mo1jh2v6-ck8v
+    title: 'Pattern: Task Chaining'
+    moves:
+      - action: openSlide
+        path: .demo/slides/pattern-task-chaining.md
+  - id: scene-mo1jh4a1-uibl
+    title: 'Pattern: Fan-out / Fan-in'
+    moves:
+      - action: openSlide
+        path: .demo/slides/pattern-fan-out-fan-in.md
+  - id: scene-mo1jh5k9-64o5
+    title: 'Pattern: Monitor'
+    moves:
+      - action: openSlide
+        path: .demo/slides/pattern-monitor.md
+  - id: scene-mo1jh6v5-ogtx
+    title: 'Pattern: External System Interaction'
+    moves:
+      - action: openSlide
+        path: .demo/slides/pattern-external-interaction.md
+  - id: scene-mo1jh8a6-9xfp
+    title: 'Pattern: Child Workflows'
+    moves:
+      - action: openSlide
+        path: .demo/slides/pattern-child-workflows.md
   - id: demo-mnvku57q-n6ud
     title: Local Setup
     moves:
