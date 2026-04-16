@@ -13,7 +13,7 @@ var cache = builder
     .AddValkey("cache", 16379, cachePassword)
     .WithContainerName("workflow-state")
     .WithDataVolume("workflow-state-data")
-    .WithPersistence();
+    .WithPersistence(TimeSpan.FromMinutes(60));
 
 var workflowApp = builder
     .AddProject<Projects.EnterpriseDiagnostics_ApiService>("wf-app")
@@ -34,7 +34,7 @@ builder
     .WithBindMount(Path.Join(executingPath, "Resources"), "/app/components")
     .WithEnvironment("COMPONENT_FILE", "/app/components/statestore-dashboard.yaml")
     .WithEnvironment("APP_ID", "diagrid-dashboard")
-    .WithHttpEndpoint(targetPort: 8080)
+    .WithHttpEndpoint(port: 58888, targetPort: 8080)
     .WithReference(cache);
 
 builder.Build().Run();
