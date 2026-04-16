@@ -2,7 +2,7 @@
 layout: default
 ---
 
-# Local Setup
+# Technologies used
 
 - Docker Desktop
 - Dapr CLI & Dapr services

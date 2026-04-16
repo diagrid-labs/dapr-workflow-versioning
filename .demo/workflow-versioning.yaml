@@ -33,6 +33,11 @@ scenes:
     moves:
       - action: openSlide
         path: .demo/slides/dapr-website.md
+  - id: demo-mo1cfegx-0aki
+    title: Dapr Building Blocks
+    moves:
+      - action: openSlide
+        path: .demo/slides/dapr-platform.md
   - id: demo-mnvkeq69-ixrh
     title: Dapr Workflow
     moves:
@@ -302,3 +307,18 @@ scenes:
         terminalId: app-run
       - action: sendKeybinding
         keybinding: ctrl+c
+  - id: scene-mo1c1quc-kfs3
+    title: Recap
+    moves:
+      - action: openSlide
+        path: .demo/slides/recap.md
+  - id: demo-mo1c2768-lb2s
+    title: Tips
+    moves:
+      - action: openSlide
+        path: .demo/slides/recap-details.md
+  - id: scene-mo1c7iii-ggcr
+    title: Resources
+    moves:
+      - action: openSlide
+        path: .demo/slides/resources.md
