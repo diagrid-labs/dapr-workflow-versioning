@@ -235,20 +235,17 @@ scenes:
       - action: executeTerminalCommand
         terminalId: app-run
         command: dotnet add EnterpriseDiagnostics.AppHost/EnterpriseDiagnostics.AppHost.csproj package Diagrid.Aspire.Hosting.Catalyst
-        insertTypingMode: character-by-character
-        insertTypingSpeed: 35
+        insertTypingMode: instant
         autoExecute: true
       - action: executeTerminalCommand
         terminalId: app-run
         command: dotnet remove EnterpriseDiagnostics.AppHost/EnterpriseDiagnostics.AppHost.csproj package Aspire.Hosting.Valkey
-        insertTypingMode: character-by-character
-        insertTypingSpeed: 35
+        insertTypingMode: instant
         autoExecute: true
       - action: executeTerminalCommand
         terminalId: app-run
         command: dotnet remove EnterpriseDiagnostics.AppHost/EnterpriseDiagnostics.AppHost.csproj package CommunityToolkit.Aspire.Hosting.Dapr
-        insertTypingMode: character-by-character
-        insertTypingSpeed: 35
+        insertTypingMode: instant
         autoExecute: true
   - id: scene-mnsnz84q-3lj7
     title: Update AppHost.cs
