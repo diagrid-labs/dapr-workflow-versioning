@@ -12,8 +12,7 @@ var cachePassword = builder.AddParameter("cache-password", "state-store-123", se
 var cache = builder
     .AddValkey("cache", 16379, cachePassword)
     .WithContainerName("workflow-state")
-    .WithDataVolume("workflow-state-data")
-    .WithPersistence(TimeSpan.FromMinutes(60));
+    .WithDataVolume("workflow-state-data");
 
 var workflowApp = builder
     .AddProject<Projects.EnterpriseDiagnostics_ApiService>("wf-app")
