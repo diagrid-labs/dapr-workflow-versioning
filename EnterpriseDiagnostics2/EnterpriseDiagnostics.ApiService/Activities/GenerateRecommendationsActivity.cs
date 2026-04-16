@@ -57,9 +57,15 @@ internal sealed partial class GenerateRecommendationsActivity(
         var json = JsonSerializer.Deserialize<JsonElement>(
             response.Outputs.First().Choices.First().Message.Content);
 
-        return new RecommendationsResult(
-            JsonSerializer.Deserialize<string[]>(json.GetProperty("recommendations").GetRawText()) ?? [],
-            JsonSerializer.Deserialize<string[]>(json.GetProperty("priorities").GetRawText()) ?? []);
+        var recommendations = json.TryGetProperty("recommendations", out var recsEl)
+            ? JsonSerializer.Deserialize<string[]>(recsEl.GetRawText()) ?? []
+            : [];
+
+        var priorities = json.TryGetProperty("priorities", out var priEl)
+            ? JsonSerializer.Deserialize<string[]>(priEl.GetRawText()) ?? []
+            : [];
+
+        return new RecommendationsResult(recommendations, priorities);
     }
 
     private static Google.Protobuf.WellKnownTypes.Struct GetResponseFormat()

@@ -3,7 +3,7 @@ description: ''
 version: 3
 scenes:
   - id: scene-mnvkbklf-nxlv
-    title: Into
+    title: Intro
     moves:
       - action: setPresentationView
       - action: openSlide

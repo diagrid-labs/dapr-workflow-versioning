@@ -4,7 +4,7 @@ common:
   appLogDestination: console
   daprdLogDestination: console
 apps:
-  - appID: wf-app2
+  - appID: wf-app
     appPort: 5467
     appDirPath: ./EnterpriseDiagnostics.ApiService
     logLevel: debug
