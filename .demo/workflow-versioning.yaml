@@ -202,6 +202,13 @@ scenes:
         terminalId: app-run
         insertTypingMode: character-by-character
         insertTypingSpeed: 100
+  - id: demo-mo1ioo5g-8o73
+    title: Open Program.cs
+    moves:
+      - action: highlight
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Program.cs
+        position: '28:38'
+        highlightWholeLine: true
   - id: demo-mnro8r8o-8lky
     title: Start V2 workflow
     moves:
