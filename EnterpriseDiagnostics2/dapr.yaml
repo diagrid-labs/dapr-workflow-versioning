@@ -1,0 +1,13 @@
+version: 1
+common:
+  resourcesPath: ./Resources
+  appLogDestination: console
+  daprdLogDestination: console
+apps:
+  - appID: wf-app2
+    appPort: 5467
+    appDirPath: ./EnterpriseDiagnostics.ApiService
+    logLevel: debug
+    command: ["dotnet", "run"]
+    placementHostAddress: localhost:6050 #58080
+    schedulerHostAddress: localhost:6060 #58081

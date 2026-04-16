@@ -1,0 +1,18 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: conversation
+spec:
+  type: conversation.anthropic
+  version: v1
+  metadata:
+    - name: key
+      secretKeyRef:
+        name: AnthropicApiKey
+        key: AnthropicApiKey
+    - name: model
+      value: claude-sonnet-4-6
+    - name: responseCacheTTL
+      value: 15m
+auth:
+  secretStore: local-secret
