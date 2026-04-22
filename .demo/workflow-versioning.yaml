@@ -88,36 +88,6 @@ scenes:
     moves:
       - action: executeVSCodeCommand
         command: workbench.view.explorer
-  - id: scene-mnrqasb2-sver
-    title: Show AppHost
-    moves:
-      - action: open
-        path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs
-  - id: scene-mnrqza12-wz9z
-    title: Show workflow diagram
-    moves:
-      - action: markdownPreview
-        path: .demo/slides/diagnostics-workflow-v0.md
-  - id: scene-mnrol4o8-zic7
-    title: Show workflow
-    moves:
-      - action: open
-        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflow.cs
-  - id: demo-mnromf7p-rq2z
-    title: Show activity
-    moves:
-      - action: open
-        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Activities/AnalyzeHullActivity.cs
-  - id: demo-mnyleyzz-gv3l
-    title: Show conversation component
-    moves:
-      - action: open
-        path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/Resources/conversation.yaml
-  - id: demo-mnron4pu-wd99
-    title: Show Program.cs
-    moves:
-      - action: open
-        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Program.cs
   - id: scene-mnqzvwx1-dkk1
     title: Build application
     moves:
@@ -151,6 +121,36 @@ scenes:
     moves:
       - action: showInfoMessage
         message: Check Diagrid Dev Dashboard
+  - id: scene-mnrqasb2-sver
+    title: Show AppHost
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/AppHost.cs
+  - id: scene-mnrqza12-wz9z
+    title: Show workflow diagram
+    moves:
+      - action: markdownPreview
+        path: .demo/slides/diagnostics-workflow-v0.md
+  - id: scene-mnrol4o8-zic7
+    title: Show workflow
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflow.cs
+  - id: demo-mnromf7p-rq2z
+    title: Show activity
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Activities/AnalyzeHullActivity.cs
+  - id: demo-mnyleyzz-gv3l
+    title: Show conversation component
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.AppHost/Resources/conversation.yaml
+  - id: demo-mnron4pu-wd99
+    title: Show Program.cs
+    moves:
+      - action: open
+        path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Program.cs
   - id: scene-mnrbvk1w-jr1h
     title: Stop application
     moves:
