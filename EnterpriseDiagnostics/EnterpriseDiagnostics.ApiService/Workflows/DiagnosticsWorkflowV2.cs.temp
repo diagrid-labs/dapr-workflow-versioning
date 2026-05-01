@@ -25,7 +25,7 @@ internal sealed partial class DiagnosticsWorkflowV2 : Workflow<DiagnosticsInput,
 
         var securityTask = context.CallActivityAsync<AnalysisResult>(
             nameof(AnalyzeSecuritySystemsActivity),
-            new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Security Protocols"));
+            new AnalysisInput(input.ShipName, input.DiagnosticsDate, input.EngineerName, "Security Systems"));
 
         var weaponsTask = context.CallActivityAsync<AnalysisResult>(
             nameof(AnalyzeWeaponSystemsActivity),

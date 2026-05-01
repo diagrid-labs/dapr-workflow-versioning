@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Dapr.Workflow;
 using Dapr.Workflow.Versioning;
-using Dapr.AI.Conversation.Extensions;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
@@ -47,8 +46,6 @@ if (useOtlpExporter)
 // Health checks
 builder.Services.AddHealthChecks()
     .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
-
-builder.Services.AddDaprConversationClient();
 
 builder.Services.AddDaprWorkflow(options =>
 {
