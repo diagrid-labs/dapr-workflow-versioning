@@ -69,9 +69,9 @@ flowchart TD
 
 ## Architecture
 
-Two solutions ship side by side, demonstrating the same workflow against different runtimes.
+Two solutions ship side by side. The Aspire one is the demo starting point that evolves through the versions live; the no-Aspire one is the finished reference.
 
-### `EnterpriseDiagnostics` — local Dapr via .NET Aspire
+### `EnterpriseDiagnostics` — demo solution, local Dapr via .NET Aspire
 
 ```mermaid
 graph LR
@@ -85,21 +85,23 @@ graph LR
 
 - .NET 10 + Aspire CLI orchestrates the ApiService, Dapr sidecar, Valkey state store, and the Diagrid Dev Dashboard
 - Conversation API (Anthropic) component is available; activities use mocked outputs by default
+- Ships with V0 active and V2/V3 as `.cs.temp` files so the talk can introduce each version step by step
 
-### `EnterpriseDiagnostics2` — Diagrid Catalyst
+### `EnterpriseDiagnostics-NoAspire` — final reference solution, no Aspire
 
 ```mermaid
 graph LR
     Service[ApiService]
-    subgraph Catalyst[Diagrid Catalyst]
-        Sidecar[Workflow Engine]
-        Store[(Managed State Store)]
-    end
+    Sidecar[Dapr Sidecar<br/>Workflow Engine]
+    Store[(Local State Store)]
     Service <--> Sidecar
     Sidecar --> Store
+    Store --> Sidecar
 ```
 
-Same workflow, no local Dapr or state store — Catalyst provides the workflow engine and storage as a managed service.
+- Same workflow code, but **no Aspire** — run with `dapr run -f .` using the included `dapr.yaml`
+- Contains the **final state of all three workflow versions** (`DiagnosticsWorkflow`, `DiagnosticsWorkflowV2`, `DiagnosticsWorkflowV3`) registered side by side
+- Use this solution as a reference for the completed implementation, not to follow the demo evolution
 
 ## Getting Started
 
