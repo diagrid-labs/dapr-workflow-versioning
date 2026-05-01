@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Dapr.Workflow;
 using Dapr.Workflow.Versioning;
-using Dapr.AI.Conversation.Extensions;
 using EnterpriseDiagnostics.ApiService.Activities;
 using EnterpriseDiagnostics.ApiService.Models;
 using EnterpriseDiagnostics.ApiService.Workflows;
@@ -10,14 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddDaprConversationClient();
-
 builder.Services.AddDaprWorkflow(options =>
 {
     options.RegisterActivity<AnalyzeHullActivity>();
     options.RegisterActivity<AnalyzeWarpCoreActivity>();
     options.RegisterActivity<AnalyzeSecuritySystemsActivity>();
-
+    
     options.RegisterActivity<GenerateRecommendationsActivity>();
     options.RegisterActivity<NotifyBridgeActivity>();
 });

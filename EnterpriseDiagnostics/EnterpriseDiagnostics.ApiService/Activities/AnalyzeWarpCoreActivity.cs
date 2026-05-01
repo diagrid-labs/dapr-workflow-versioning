@@ -1,91 +1,31 @@
-using System.Text.Json;
-using Dapr.AI.Conversation;
-using Dapr.AI.Conversation.ConversationRoles;
 using Dapr.Workflow;
 using EnterpriseDiagnostics.ApiService.Models;
 
 namespace EnterpriseDiagnostics.ApiService.Activities;
 
 internal sealed partial class AnalyzeWarpCoreActivity(
-    ILogger<AnalyzeWarpCoreActivity> logger,
-    DaprConversationClient conversationClient) : WorkflowActivity<AnalysisInput, AnalysisResult>
+    ILogger<AnalyzeWarpCoreActivity> logger) : WorkflowActivity<AnalysisInput, AnalysisResult>
 {
-    public override async Task<AnalysisResult> RunAsync(
+    private static readonly string[] CandidateIssues =
+    [
+        "Matter/antimatter containment field oscillating outside tolerance",
+        "Dilithium crystal alignment drift detected at 0.04 microns",
+        "Plasma injector #3 throughput below specification",
+        "Warp field coil efficiency reduced by 6% on starboard nacelle",
+        "EPS conduit overheating near main reactor manifold"
+    ];
+
+    public override Task<AnalysisResult> RunAsync(
         WorkflowActivityContext context,
         AnalysisInput input)
     {
         LogActivity(logger, input.ShipName);
 
-        var options = new ConversationOptions("conversation")
-        {
-            Temperature = 0.7,
-            PromptCacheRetention = TimeSpan.FromMinutes(15),
-            ResponseFormat = GetResponseFormat()
-        };
+        // Just to simulate some processing, and you have tim to pause the workflow.
+        Thread.Sleep(2500);
 
-        var response = await conversationClient.ConverseAsync(
-            [
-                new ConversationInput(new List<IConversationMessage>
-                {
-                    new SystemMessage
-                    {
-                        Content = [new MessageContent(
-                            "You are a Starfleet engineering diagnostic system for the warp core.")]
-                    },
-                    new UserMessage
-                    {
-                        Name = input.EngineerName.Replace(" ", ""),
-                        Content = [new MessageContent(
-                            $"Perform a warp core analysis for the starship {input.ShipName}. " +
-                            $"Diagnostics requested on {input.DiagnosticsDate} by {input.EngineerName}. " +
-                            "Analyze matter/antimatter containment, dilithium crystal alignment, " +
-                            "plasma injectors, and warp field coil efficiency. Return JSON with systemName, " +
-                            "status, issues array, and healthPercentage (0-100).")]
-                    }
-                })
-            ],
-            options);
-
-        var json = JsonSerializer.Deserialize<JsonElement>(
-            response.Outputs.First().Choices.First().Message.Content);
-
-        return new AnalysisResult(
-            json.GetProperty("systemName").GetString() ?? "Warp Core",
-            json.GetProperty("status").GetString() ?? "Unknown",
-            JsonSerializer.Deserialize<string[]>(json.GetProperty("issues").GetRawText()) ?? [],
-            json.GetProperty("healthPercentage").GetInt32());
-    }
-
-    private static Google.Protobuf.WellKnownTypes.Struct GetResponseFormat()
-    {
-        var responseFormat = new Google.Protobuf.WellKnownTypes.Struct();
-        responseFormat.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("object"));
-
-        var properties = new Google.Protobuf.WellKnownTypes.Struct();
-
-        var stringType = new Google.Protobuf.WellKnownTypes.Struct();
-        stringType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("string"));
-
-        var numberType = new Google.Protobuf.WellKnownTypes.Struct();
-        numberType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("integer"));
-
-        var issuesType = new Google.Protobuf.WellKnownTypes.Struct();
-        issuesType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("array"));
-        issuesType.Fields.Add("items", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
-
-        properties.Fields.Add("systemName", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
-        properties.Fields.Add("status", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
-        properties.Fields.Add("issues", Google.Protobuf.WellKnownTypes.Value.ForStruct(issuesType));
-        properties.Fields.Add("healthPercentage", Google.Protobuf.WellKnownTypes.Value.ForStruct(numberType));
-
-        responseFormat.Fields.Add("properties", Google.Protobuf.WellKnownTypes.Value.ForStruct(properties));
-        responseFormat.Fields.Add("required", Google.Protobuf.WellKnownTypes.Value.ForList(
-            Google.Protobuf.WellKnownTypes.Value.ForString("systemName"),
-            Google.Protobuf.WellKnownTypes.Value.ForString("status"),
-            Google.Protobuf.WellKnownTypes.Value.ForString("issues"),
-            Google.Protobuf.WellKnownTypes.Value.ForString("healthPercentage")));
-
-        return responseFormat;
+        var result = MockAnalysisGenerator.Generate("Warp Core", CandidateIssues);
+        return Task.FromResult(result);
     }
 
     [LoggerMessage(LogLevel.Information, "AnalyzeWarpCoreActivity: Analyzing warp core for {ShipName}")]

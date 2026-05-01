@@ -1,100 +1,51 @@
-using System.Text.Json;
-using Dapr.AI.Conversation;
-using Dapr.AI.Conversation.ConversationRoles;
 using Dapr.Workflow;
 using EnterpriseDiagnostics.ApiService.Models;
 
 namespace EnterpriseDiagnostics.ApiService.Activities;
 
 internal sealed partial class GenerateRecommendationsActivity(
-    ILogger<GenerateRecommendationsActivity> logger,
-    DaprConversationClient conversationClient) : WorkflowActivity<RecommendationsInput, RecommendationsResult>
+    ILogger<GenerateRecommendationsActivity> logger) : WorkflowActivity<RecommendationsInput, RecommendationsResult>
 {
-    public override async Task<RecommendationsResult> RunAsync(
+    public override Task<RecommendationsResult> RunAsync(
         WorkflowActivityContext context,
         RecommendationsInput input)
     {
         LogActivity(logger, input.ShipName);
 
-        var analysisData = JsonSerializer.Serialize(new
-        {
-            hull = input.HullAnalysis,
-            warpCore = input.WarpCoreAnalysis,
-            securityProtocols = input.SecurityProtocolsAnalysis,
-            weaponSystems = input.WeaponSystemsAnalysis
-        });
+        // Just to simulate some processing, and you have tim to pause the workflow.
+        Thread.Sleep(2500);
 
-        var options = new ConversationOptions("conversation")
+        var analyses = new[]
         {
-            Temperature = 0.7,
-            PromptCacheRetention = TimeSpan.FromMinutes(15),
-            ResponseFormat = GetResponseFormat()
-        };
+            input.HullAnalysis,
+            input.WarpCoreAnalysis,
+            input.SecurityProtocolsAnalysis,
+            input.WeaponSystemsAnalysis
+        }
+        .Where(a => a is not null)
+        .Select(a => a!)
+        .ToArray();
 
-        var response = await conversationClient.ConverseAsync(
-            [
-                new ConversationInput(new List<IConversationMessage>
+        var nonNominal = analyses
+            .Where(a => !string.Equals(a.Status, "Nominal", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+
+        var recommendations = nonNominal.Length == 0
+            ? new[] { "All systems nominal - no maintenance recommended." }
+            : nonNominal
+                .Select(a =>
                 {
-                    new SystemMessage
-                    {
-                        Content = [new MessageContent(
-                            "You are a Starfleet engineering diagnostic system for analysis recommendations.")]
-                    },
-                    new UserMessage
-                    {
-                        Name = input.EngineerName.Replace(" ", ""),
-                        Content = [new MessageContent(
-                            $"Based on the following diagnostics data for the starship {input.ShipName}, " +
-                            $"requested on {input.DiagnosticsDate} by {input.EngineerName}, " +
-                            "generate a list of actionable recommendations and a prioritized list of repairs. " +
-                            $"Diagnostics data: {analysisData}. " +
-                            "Return JSON with recommendations array and priorities array.")]
-                    }
+                    var firstIssue = a.Issues.Length > 0 ? a.Issues[0] : "general inspection";
+                    return $"Schedule maintenance for {a.SystemName} ({a.Status}, {a.HealthPercentage}% health): {firstIssue}";
                 })
-            ],
-            options);
+                .ToArray();
 
-        var json = JsonSerializer.Deserialize<JsonElement>(
-            response.Outputs.First().Choices.First().Message.Content);
+        var priorities = analyses
+            .OrderBy(a => a.HealthPercentage)
+            .Select((a, index) => $"P{index + 1}: {a.SystemName} - {a.Status} ({a.HealthPercentage}%)")
+            .ToArray();
 
-        var recommendations = json.TryGetProperty("recommendations", out var recsEl)
-            ? JsonSerializer.Deserialize<string[]>(recsEl.GetRawText()) ?? []
-            : [];
-
-        var priorities = json.TryGetProperty("priorities", out var priEl)
-            ? JsonSerializer.Deserialize<string[]>(priEl.GetRawText()) ?? []
-            : [];
-
-        return new RecommendationsResult(recommendations, priorities);
-    }
-
-    private static Google.Protobuf.WellKnownTypes.Struct GetResponseFormat()
-    {
-        var responseFormat = new Google.Protobuf.WellKnownTypes.Struct();
-        responseFormat.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("object"));
-
-        var properties = new Google.Protobuf.WellKnownTypes.Struct();
-
-        var stringType = new Google.Protobuf.WellKnownTypes.Struct();
-        stringType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("string"));
-
-        var recommendationsType = new Google.Protobuf.WellKnownTypes.Struct();
-        recommendationsType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("array"));
-        recommendationsType.Fields.Add("items", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
-
-        var prioritiesType = new Google.Protobuf.WellKnownTypes.Struct();
-        prioritiesType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("array"));
-        prioritiesType.Fields.Add("items", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
-
-        properties.Fields.Add("recommendations", Google.Protobuf.WellKnownTypes.Value.ForStruct(recommendationsType));
-        properties.Fields.Add("priorities", Google.Protobuf.WellKnownTypes.Value.ForStruct(prioritiesType));
-
-        responseFormat.Fields.Add("properties", Google.Protobuf.WellKnownTypes.Value.ForStruct(properties));
-        responseFormat.Fields.Add("required", Google.Protobuf.WellKnownTypes.Value.ForList(
-            Google.Protobuf.WellKnownTypes.Value.ForString("recommendations"),
-            Google.Protobuf.WellKnownTypes.Value.ForString("priorities")));
-
-        return responseFormat;
+        return Task.FromResult(new RecommendationsResult(recommendations, priorities));
     }
 
     [LoggerMessage(LogLevel.Information, "GenerateRecommendationsActivity: Generating recommendations for {ShipName}")]

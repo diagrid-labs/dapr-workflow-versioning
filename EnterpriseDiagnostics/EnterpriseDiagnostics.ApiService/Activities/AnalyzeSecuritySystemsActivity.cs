@@ -1,91 +1,31 @@
-using System.Text.Json;
-using Dapr.AI.Conversation;
-using Dapr.AI.Conversation.ConversationRoles;
 using Dapr.Workflow;
 using EnterpriseDiagnostics.ApiService.Models;
 
 namespace EnterpriseDiagnostics.ApiService.Activities;
 
 internal sealed partial class AnalyzeSecuritySystemsActivity(
-    ILogger<AnalyzeSecuritySystemsActivity> logger,
-    DaprConversationClient conversationClient) : WorkflowActivity<AnalysisInput, AnalysisResult>
+    ILogger<AnalyzeSecuritySystemsActivity> logger) : WorkflowActivity<AnalysisInput, AnalysisResult>
 {
-    public override async Task<AnalysisResult> RunAsync(
+    private static readonly string[] CandidateIssues =
+    [
+        "Shield generator 2 recharge rate slower than baseline",
+        "Encryption protocol due for rotation in less than 48 hours",
+        "Intrusion detection system reporting recurring false positives on deck 8",
+        "Access control matrix has 3 stale credentials pending revocation",
+        "Forcefield emitter coverage gap detected near cargo bay 4"
+    ];
+
+    public override Task<AnalysisResult> RunAsync(
         WorkflowActivityContext context,
         AnalysisInput input)
     {
         LogActivity(logger, input.ShipName);
 
-        var options = new ConversationOptions("conversation")
-        {
-            Temperature = 0.7,
-            PromptCacheRetention = TimeSpan.FromMinutes(15),
-            ResponseFormat = GetResponseFormat()
-        };
+        // Just to simulate some processing, and you have tim to pause the workflow.
+        Thread.Sleep(2500);
 
-        var response = await conversationClient.ConverseAsync(
-            [
-                new ConversationInput(new List<IConversationMessage>
-                {
-                    new SystemMessage
-                    {
-                        Content = [new MessageContent(
-                            "You are a Starfleet engineering diagnostic system for starship security systems.")]
-                    },
-                    new UserMessage
-                    {
-                        Name = input.EngineerName.Replace(" ", ""),
-                        Content = [new MessageContent(
-                            $"Perform a security systems analysis for the starship {input.ShipName}. " +
-                            $"Diagnostics requested on {input.DiagnosticsDate} by {input.EngineerName}. " +
-                            "Analyze shield generators, encryption protocols, intrusion detection systems, " +
-                            "and access control matrices. Return JSON with systemName, status, issues array, " +
-                            "and healthPercentage (0-100).")]
-                    }
-                })
-            ],
-            options);
-
-        var json = JsonSerializer.Deserialize<JsonElement>(
-            response.Outputs.First().Choices.First().Message.Content);
-
-        return new AnalysisResult(
-            json.GetProperty("systemName").GetString() ?? "Security Systems",
-            json.GetProperty("status").GetString() ?? "Unknown",
-            JsonSerializer.Deserialize<string[]>(json.GetProperty("issues").GetRawText()) ?? [],
-            json.GetProperty("healthPercentage").GetInt32());
-    }
-
-    private static Google.Protobuf.WellKnownTypes.Struct GetResponseFormat()
-    {
-        var responseFormat = new Google.Protobuf.WellKnownTypes.Struct();
-        responseFormat.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("object"));
-
-        var properties = new Google.Protobuf.WellKnownTypes.Struct();
-
-        var stringType = new Google.Protobuf.WellKnownTypes.Struct();
-        stringType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("string"));
-
-        var numberType = new Google.Protobuf.WellKnownTypes.Struct();
-        numberType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("integer"));
-
-        var issuesType = new Google.Protobuf.WellKnownTypes.Struct();
-        issuesType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("array"));
-        issuesType.Fields.Add("items", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
-
-        properties.Fields.Add("systemName", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
-        properties.Fields.Add("status", Google.Protobuf.WellKnownTypes.Value.ForStruct(stringType));
-        properties.Fields.Add("issues", Google.Protobuf.WellKnownTypes.Value.ForStruct(issuesType));
-        properties.Fields.Add("healthPercentage", Google.Protobuf.WellKnownTypes.Value.ForStruct(numberType));
-
-        responseFormat.Fields.Add("properties", Google.Protobuf.WellKnownTypes.Value.ForStruct(properties));
-        responseFormat.Fields.Add("required", Google.Protobuf.WellKnownTypes.Value.ForList(
-            Google.Protobuf.WellKnownTypes.Value.ForString("systemName"),
-            Google.Protobuf.WellKnownTypes.Value.ForString("status"),
-            Google.Protobuf.WellKnownTypes.Value.ForString("issues"),
-            Google.Protobuf.WellKnownTypes.Value.ForString("healthPercentage")));
-
-        return responseFormat;
+        var result = MockAnalysisGenerator.Generate("Security Systems", CandidateIssues);
+        return Task.FromResult(result);
     }
 
     [LoggerMessage(LogLevel.Information, "AnalyzeSecurityProtocolsActivity: Analyzing security protocols for {ShipName}")]

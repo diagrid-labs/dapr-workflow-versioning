@@ -1,80 +1,30 @@
-using System.Text.Json;
-using Dapr.AI.Conversation;
-using Dapr.AI.Conversation.ConversationRoles;
 using Dapr.Workflow;
 using EnterpriseDiagnostics.ApiService.Models;
 
 namespace EnterpriseDiagnostics.ApiService.Activities;
 
 internal sealed partial class NotifyBridgeActivity(
-    ILogger<NotifyBridgeActivity> logger,
-    DaprConversationClient conversationClient) : WorkflowActivity<BridgeNotificationInput, BridgeNotificationResult>
+    ILogger<NotifyBridgeActivity> logger) : WorkflowActivity<BridgeNotificationInput, BridgeNotificationResult>
 {
-    public override async Task<BridgeNotificationResult> RunAsync(
+    public override Task<BridgeNotificationResult> RunAsync(
         WorkflowActivityContext context,
         BridgeNotificationInput input)
     {
         LogActivity(logger, input.ShipName);
 
-        var recommendationsData = JsonSerializer.Serialize(input.Recommendations);
+        var topPriority = input.Recommendations.Priorities.FirstOrDefault()
+            ?? "No prioritized items.";
+        var recommendationCount = input.Recommendations.Recommendations.Length;
 
-        var options = new ConversationOptions("conversation")
-        {
-            Temperature = 0.7,
-            ResponseFormat = GetResponseFormat()
-        };
-
-        var response = await conversationClient.ConverseAsync(
-            [
-                new ConversationInput(new List<IConversationMessage>
-                {
-                    new SystemMessage
-                    {
-                        Content = [new MessageContent(
-                            "You are a Starfleet engineering diagnostic system that notifications to the bridge." )]
-                    },
-                    new UserMessage
-                    {
-                        Name = input.EngineerName.Replace(" ", ""),
-                        Content = [new MessageContent(
-                            $"Compose a concise bridge notification message for the starship {input.ShipName}. " +
-                            $"The diagnostics were requested by {input.EngineerName}. " +
-                            $"Based on these recommendations: {recommendationsData}. " +
-                            "Write a professional Starfleet bridge notification summarizing the key findings " +
-                            "and top priorities. Return JSON with a message field.")]
-                    }
-                })
-            ],
-            options);
-
-        var json = JsonSerializer.Deserialize<JsonElement>(
-            response.Outputs.First().Choices.First().Message.Content);
-
-        var message = json.GetProperty("message").GetString()
-            ?? "Diagnostics complete. Please review the full report.";
+        var message =
+            $"Bridge notification for the {input.ShipName}: " +
+            $"diagnostics requested by {input.EngineerName} are complete. " +
+            $"{recommendationCount} recommendation(s) generated. " +
+            $"Top priority: {topPriority}.";
 
         LogNotification(logger, message);
 
-        return new BridgeNotificationResult(message);
-    }
-
-    private static Google.Protobuf.WellKnownTypes.Struct GetResponseFormat()
-    {
-        var responseFormat = new Google.Protobuf.WellKnownTypes.Struct();
-        responseFormat.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("object"));
-
-        var properties = new Google.Protobuf.WellKnownTypes.Struct();
-
-        var messageType = new Google.Protobuf.WellKnownTypes.Struct();
-        messageType.Fields.Add("type", Google.Protobuf.WellKnownTypes.Value.ForString("string"));
-
-        properties.Fields.Add("message", Google.Protobuf.WellKnownTypes.Value.ForStruct(messageType));
-
-        responseFormat.Fields.Add("properties", Google.Protobuf.WellKnownTypes.Value.ForStruct(properties));
-        responseFormat.Fields.Add("required", Google.Protobuf.WellKnownTypes.Value.ForList(
-            Google.Protobuf.WellKnownTypes.Value.ForString("message")));
-
-        return responseFormat;
+        return Task.FromResult(new BridgeNotificationResult(message));
     }
 
     [LoggerMessage(LogLevel.Information, "NotifyBridgeActivity: Sending bridge notification for {ShipName}")]
