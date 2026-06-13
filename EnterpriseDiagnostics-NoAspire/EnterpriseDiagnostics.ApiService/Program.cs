@@ -6,7 +6,6 @@ using Dapr.Workflow.Versioning;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
-using EnterpriseDiagnostics.ApiService.Activities;
 using EnterpriseDiagnostics.ApiService.Models;
 using EnterpriseDiagnostics.ApiService.Workflows;
 
@@ -47,15 +46,7 @@ if (useOtlpExporter)
 builder.Services.AddHealthChecks()
     .AddCheck("self", () => HealthCheckResult.Healthy(), ["live"]);
 
-builder.Services.AddDaprWorkflow(options =>
-{
-    options.RegisterActivity<AnalyzeHullActivity>();
-    options.RegisterActivity<AnalyzeWarpCoreActivity>();
-    options.RegisterActivity<AnalyzeSecuritySystemsActivity>();
-    options.RegisterActivity<AnalyzeWeaponSystemsActivity>();
-    options.RegisterActivity<GenerateRecommendationsActivity>();
-    options.RegisterActivity<NotifyBridgeActivity>();
-});
+builder.Services.AddDaprWorkflow();
 builder.Services.AddDaprWorkflowVersioning();
 
 var app = builder.Build();
