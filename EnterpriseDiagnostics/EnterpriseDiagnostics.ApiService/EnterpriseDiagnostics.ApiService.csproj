@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <PackageReference Include="Dapr.Workflow" Version="1.18.2" />
-    <PackageReference Include="Dapr.Workflow.Versioning" Version="1.18.2" />
   </ItemGroup>
 
 </Project>
