@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Dapr.Workflow;
 using Dapr.Workflow.Versioning;
-using EnterpriseDiagnostics.ApiService.Activities;
 using EnterpriseDiagnostics.ApiService.Models;
 using EnterpriseDiagnostics.ApiService.Workflows;
 
@@ -9,15 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
-builder.Services.AddDaprWorkflow(options =>
-{
-    options.RegisterActivity<AnalyzeHullActivity>();
-    options.RegisterActivity<AnalyzeWarpCoreActivity>();
-    options.RegisterActivity<AnalyzeSecuritySystemsActivity>();
-    
-    options.RegisterActivity<GenerateRecommendationsActivity>();
-    options.RegisterActivity<NotifyBridgeActivity>();
-});
+builder.Services.AddDaprWorkflow();
 builder.Services.AddDaprWorkflowVersioning();
 
 var app = builder.Build();
@@ -39,7 +30,7 @@ app.MapGet("/status/{instanceId}", async (
     [FromServices] DaprWorkflowClient workflowClient) =>
 {
     var state = await workflowClient.GetWorkflowStateAsync(instanceId);
-    if (state is null || !state.Exists)
+    if (!state.Exists)
     {
         return Results.NotFound($"Workflow instance '{instanceId}' not found.");
     }
