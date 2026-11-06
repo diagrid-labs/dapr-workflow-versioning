@@ -2,6 +2,6 @@
 layout: section
 ---
 
-# Diagrid Catalyst
+# Diagrid
 
 ![Diagrid animation](.demo/images/bot-animations-4.gif)
