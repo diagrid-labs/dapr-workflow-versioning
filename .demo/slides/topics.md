@@ -7,4 +7,4 @@ layout: default
 - Dapr Workflow
 - Local setup
 - Workflow Versioning demos
-- Running with Catalyst
+- Running with Diagrid

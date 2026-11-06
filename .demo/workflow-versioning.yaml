@@ -247,17 +247,17 @@ scenes:
       - action: sendKeybinding
         keybinding: ctrl+c
   - id: demo-mnvl0dmx-vc4k
-    title: Catalyst
+    title: Diagrid
     moves:
       - action: openSlide
         path: .demo/slides/catalyst.md
   - id: demo-mnvl7y2p-tcga
-    title: Catalyst explanation
+    title: Diagrid explanation
     moves:
       - action: openSlide
         path: .demo/slides/catalyst-explanation.md
   - id: demo-mnvx25dp-b53v
-    title: Local Setup with Catalyst
+    title: Local Setup with Diagrid
     moves:
       - action: openSlide
         path: .demo/slides/technologies-catalyst.md
@@ -312,7 +312,7 @@ scenes:
       - action: open
         path: EnterpriseDiagnostics/EnterpriseDiagnostics.ApiService/Workflows/DiagnosticsWorkflowV3.cs
   - id: demo-mnsoc0f7-arux
-    title: Run V3 workflow app (Catalyst)
+    title: Run V3 workflow app (Diagrid)
     moves:
       - action: executeTerminalCommand
         command: aspire run
@@ -354,7 +354,7 @@ scenes:
         insertTypingSpeed: 75
         autoExecute: true
   - id: demo-mo1edeg9-rn7q
-    title: 'Alt - Run V3 workflow app (Catalyst) '
+    title: 'Alt - Run V3 workflow app (Diagrid) '
     moves:
       - action: executeTerminalCommand
         terminalId: app-run

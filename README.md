@@ -111,7 +111,7 @@ Prerequisites:
 - [Aspire CLI](https://aspire.dev/get-started/install-cli/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [Dapr CLI](https://docs.dapr.io/getting-started/install-dapr-cli/) 1.17+ (for the local Dapr solution)
-- [Diagrid CLI](https://docs.diagrid.io/) (for the Catalyst solution)
+- [Diagrid CLI](https://docs.diagrid.io/) (for the Diagrid solution)
 
 Run the local Dapr version:
 
@@ -142,4 +142,4 @@ More: [Dapr workflow versioning docs](https://docs.dapr.io/developing-applicatio
 
 - [Diagrid Dev Dashboard](https://docs.diagrid.io/develop/diagrid-dashboard/)
 - [Dapr University](https://www.diagrid.io/dapr-university)
-- [Diagrid Catalyst](https://www.diagrid.io/catalyst)
+- [Diagrid](https://www.diagrid.io/catalyst)

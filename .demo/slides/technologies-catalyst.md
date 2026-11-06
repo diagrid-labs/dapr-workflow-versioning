@@ -2,12 +2,12 @@
 layout: default
 ---
 
-# Local setup with Catalyst
+# Local setup with Diagrid
 
 - Docker Desktop
 - .NET 10
 - Aspire CLI
-- Diagrid CLI (connect with Catalyst)
+- Diagrid CLI (connect with Diagrid)
 
 _No need for Dapr CLI & Dapr services or a state store for workflow data._
 
