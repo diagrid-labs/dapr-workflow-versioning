@@ -15,7 +15,7 @@ _No need for Dapr CLI & Dapr services or a state store for workflow data._
 graph LR
     Service[EnterpriseDiagnostics
     Service]
-    subgraph Diagrid Catalyst
+    subgraph Diagrid
         Sidecar[Workflow Engine]
         Store[(State Store)]
     end
